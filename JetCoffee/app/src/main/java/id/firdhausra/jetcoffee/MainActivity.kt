@@ -19,8 +19,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import id.firdhausra.jetcoffee.model.Menu
+import id.firdhausra.jetcoffee.model.dummyBestSellerMenu
 import id.firdhausra.jetcoffee.model.dummyCategory
+import id.firdhausra.jetcoffee.model.dummyMenu
 import id.firdhausra.jetcoffee.ui.components.CategoryItem
+import id.firdhausra.jetcoffee.ui.components.MenuItem
 import id.firdhausra.jetcoffee.ui.components.SearchBar
 import id.firdhausra.jetcoffee.ui.components.SectionText
 import id.firdhausra.jetcoffee.ui.theme.JetCoffeeTheme
@@ -42,6 +46,10 @@ fun JetCoffeeApp() {
         Banner()
         SectionText(stringResource(R.string.section_category))
         CategoryRow()
+        SectionText(stringResource(R.string.section_favorite_menu))
+        MenuRow(dummyMenu)
+        SectionText(stringResource(R.string.section_best_seller_menu))
+        MenuRow(dummyBestSellerMenu)
     }
 }
 
@@ -71,6 +79,22 @@ fun CategoryRow(
     ) {
         items(dummyCategory, key = { it.textCategory }) { category ->
             CategoryItem(category)
+        }
+    }
+}
+
+@Composable
+fun MenuRow(
+    listMenu: List<Menu>,
+    modifier: Modifier = Modifier
+) {
+    LazyRow(
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
+        contentPadding = PaddingValues(horizontal = 16.dp),
+        modifier = modifier
+    ) {
+        items(listMenu, key = { it.title }) { menu ->
+            MenuItem(menu)
         }
     }
 }
