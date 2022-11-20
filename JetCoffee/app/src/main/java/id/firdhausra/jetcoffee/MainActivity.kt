@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -42,7 +44,7 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun JetCoffeeApp() {
-    Column {
+    Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
         Banner()
         SectionText(stringResource(R.string.section_category))
         CategoryRow()
