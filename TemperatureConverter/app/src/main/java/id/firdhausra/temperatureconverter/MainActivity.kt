@@ -32,10 +32,18 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    StatefulTemperatureInput()
+                    TemperatureConverterApp()
                 }
             }
         }
+    }
+}
+
+@Composable
+fun TemperatureConverterApp() {
+    Column {
+        StatefulTemperatureInput()
+        ConverterApp()
     }
 }
 
@@ -63,15 +71,53 @@ fun StatefulTemperatureInput(
     }
 }
 
+@Composable
+fun StatelessTemperatureInput(
+    input: String,
+    output: String,
+    onValueChange: (String) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Column(modifier.padding(16.dp)) {
+        Text(
+            text = stringResource(R.string.stateless_converter),
+            style = MaterialTheme.typography.h5
+        )
+        OutlinedTextField(
+            value = input,
+            label = { Text(stringResource(R.string.enter_celsius)) },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+            onValueChange = onValueChange,
+        )
+        Text(stringResource(R.string.temperature_fahrenheit, output))
+    }
+}
+
 private fun convertToFahrenheit(celsius: String) =
     celsius.toDoubleOrNull()?.let {
         (it * 9 / 5) + 32
     }.toString()
 
+@Composable
+private fun ConverterApp(
+    modifier: Modifier = Modifier,
+) {
+    var input by remember { mutableStateOf("") }
+    var output by remember { mutableStateOf("") }
+    Column(modifier) {
+        StatelessTemperatureInput(
+            input = input,
+            output = output,
+            onValueChange = { newInput ->
+                input = newInput
+                output = convertToFahrenheit(newInput)
+            }
+        )
+    }
+}
+
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
-    TemperatureConverterTheme {
-        StatefulTemperatureInput()
-    }
+    TemperatureConverterApp()
 }
