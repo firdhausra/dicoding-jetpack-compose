@@ -5,6 +5,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -21,16 +22,22 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import id.firdhausra.jetheroes.component.CharacterHeader
 import id.firdhausra.jetheroes.component.HeroListItem
 import id.firdhausra.jetheroes.component.ScrollToTopButton
 import id.firdhausra.jetheroes.model.HeroesData
 import id.firdhausra.jetheroes.ui.theme.JetHeroesTheme
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun JetHeroesApp(
     modifier: Modifier = Modifier,
 ) {
+    val groupedHeroes = HeroesData.heroes
+        .sortedBy { it.name }
+        .groupBy { it.name[0] }
+
     Box(modifier = modifier) {
         val scope = rememberCoroutineScope()
         val listState = rememberLazyListState()
@@ -41,12 +48,17 @@ fun JetHeroesApp(
             state = listState,
             contentPadding = PaddingValues(bottom = 80.dp)
         ) {
-            items(HeroesData.heroes, key = { it.id }) { hero ->
-                HeroListItem(
-                    name = hero.name,
-                    photoUrl = hero.photoUrl,
-                    modifier = Modifier.fillMaxWidth()
-                )
+            groupedHeroes.forEach { (initial, heroes) ->
+                stickyHeader {
+                    CharacterHeader(initial)
+                }
+                items(heroes, key = { it.id }) { hero ->
+                    HeroListItem(
+                        name = hero.name,
+                        photoUrl = hero.photoUrl,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
             }
         }
         AnimatedVisibility(
